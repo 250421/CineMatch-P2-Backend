@@ -1,4 +1,4 @@
-package com.revature.CineMatchBackend.config;
+package com.revature.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
