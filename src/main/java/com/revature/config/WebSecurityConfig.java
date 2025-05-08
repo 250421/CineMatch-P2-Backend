@@ -40,7 +40,8 @@ public class WebSecurityConfig {
                 .securityContext(context -> context.securityContextRepository(securityContextRepository()))
                 .requestCache(RequestCacheConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth/*").permitAll()
+                        .requestMatchers("/auth/*", "/api/*").permitAll()
+                                .requestMatchers("/api/genre/*", "/api/movie/*").permitAll()
                         .requestMatchers(toH2Console()).permitAll()
 //                        .anyRequest().authenticated()
                 )
