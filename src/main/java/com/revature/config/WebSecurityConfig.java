@@ -4,6 +4,7 @@ import com.revature.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,8 +42,11 @@ public class WebSecurityConfig {
                 .requestCache(RequestCacheConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/genre/**", "/api/movie/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/genre/**", "/api/movie/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/genre", "/api/movie").hasRole("ADMIN")
                         .requestMatchers(toH2Console()).permitAll()
-//                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
