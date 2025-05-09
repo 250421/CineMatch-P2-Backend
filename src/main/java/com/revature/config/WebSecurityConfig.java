@@ -43,6 +43,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/genre/**", "/api/movie/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/genre/**", "/api/movie/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/genre", "/api/movie").hasRole("ADMIN")
                         .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated()
