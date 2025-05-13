@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +29,18 @@ public class User {
     @Column(name="role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @Column(name="genre_1")
+    private String genre_1;
+
+    @Column(name="genre_2")
+    private String genre_2;
+
+    @Column(name="genre_3")
+    private String genre_3;
+
+    @Column(name="genre_changed_time")
+    private LocalDateTime genreChangedTime;
 
     public User(String username, String password) {
         this.username = username;

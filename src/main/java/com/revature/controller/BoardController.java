@@ -80,7 +80,21 @@ public class BoardController {
 
     //Rate a post TODO
 
-    //Delete a post TODO
+    //Delete a post
+    @DeleteMapping("/api/post/{id}")
+    public @ResponseBody ResponseEntity<?> deletePostById(@PathVariable int id, HttpServletRequest request) {
+        Post post = postService.findPostById(id);
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        if (post != null) {
+            if (user.equals(post.getUser()) || user.getRole().equals(Role.ADMIN)) {
+                post.setDeleted(1);
+                postService.addPost(post);
+                return ResponseEntity.status(200).body(Response.stringResponse("Post deleted."));
+            }
+            else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
+        }
+        else return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
+    }
 
     //Get one post
     @GetMapping("/api/post/{id}")
@@ -122,7 +136,21 @@ public class BoardController {
 
     //Rate a comment TODO
 
-    //Delete a comment TODO
+    //Delete a comment
+    @DeleteMapping("/api/comment/{id}")
+    public @ResponseBody ResponseEntity<?> deleteCommentById(@PathVariable int id, HttpServletRequest request) {
+        Comment comment = commentService.findCommentById(id);
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        if (comment != null) {
+            if (user.equals(comment.getUser()) || user.getRole().equals(Role.ADMIN)) {
+                comment.setDeleted(1);
+                commentService.addComment(comment);
+                return ResponseEntity.status(200).body(Response.stringResponse("Comment deleted."));
+            }
+            else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
+        }
+        else return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
+    }
 
     //Get one comment
     @GetMapping("/api/comment/{id}")
