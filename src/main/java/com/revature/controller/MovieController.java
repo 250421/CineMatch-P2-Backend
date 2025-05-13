@@ -21,6 +21,7 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
+    //Add a new genre
     @PostMapping("/api/genre")
     public @ResponseBody ResponseEntity<?> addGenre(@RequestBody Genre genre) {
         Genre newGenre;
@@ -33,19 +34,22 @@ public class MovieController {
         return ResponseEntity.status(201).body(newGenre);
     }
 
+    //Get one genre
     @GetMapping("/api/genre/{id}")
     public @ResponseBody ResponseEntity<?> getGenreById(@PathVariable int id) {
-        Genre genre = genreService.getGenreById(id);
+        Genre genre = genreService.findGenreById(id);
         if (genre != null)
             return ResponseEntity.status(200).body(genre);
         else return ResponseEntity.status(404).body(Response.stringResponse("Genre not found."));
     }
 
+    //Get all genres
     @GetMapping("/api/genre")
     public @ResponseBody ResponseEntity<?> getAllGenres() {
-        return ResponseEntity.status(200).body(genreService.getAllGenres());
+        return ResponseEntity.status(200).body(genreService.findAllGenres());
     }
 
+    //Add a new movie
     @PostMapping("/api/movie")
     public @ResponseBody ResponseEntity<?> addMovie(@RequestBody Movie movie) {
         Movie newMovie;
@@ -58,16 +62,18 @@ public class MovieController {
         return ResponseEntity.status(201).body(newMovie);
     }
 
+    //Get one movie
     @GetMapping("/api/movie/{id}")
     public @ResponseBody ResponseEntity<?> getMovieById(@PathVariable int id) {
-        Movie movie = movieService.getMovieById(id);
+        Movie movie = movieService.findMovieById(id);
         if (movie != null)
             return ResponseEntity.status(200).body(movie);
         else return ResponseEntity.status(404).body(Response.stringResponse("Movie not found."));
     }
 
+    //Get all movies
     @GetMapping("/api/movie")
     public @ResponseBody ResponseEntity<?> getAllMovies() {
-        return ResponseEntity.status(200).body(movieService.getAllMovies());
+        return ResponseEntity.status(200).body(movieService.findAllMovies());
     }
 }

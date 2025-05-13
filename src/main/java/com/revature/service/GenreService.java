@@ -26,14 +26,14 @@ public class GenreService {
         return genreRepository.saveAll(genres);
     }
 
-    public Genre getGenreById(int id) {
+    public Genre findGenreById(int id) {
         Genre genre;
         genre = genreRepository.findById(id)
                 .orElse(null);
         return genre;
     }
 
-    public List<Genre> getAllGenres() {
+    public List<Genre> findAllGenres() {
         return genreRepository.findAll();
     }
 }

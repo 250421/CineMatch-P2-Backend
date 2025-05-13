@@ -26,14 +26,14 @@ public class MovieService {
         return movieRepository.saveAll(movies);
     }
 
-    public Movie getMovieById(int id) {
+    public Movie findMovieById(int id) {
         Movie movie;
         movie = movieRepository.findById(id)
                 .orElse(null);
         return movie;
     }
 
-    public List<Movie> getAllMovies() {
+    public List<Movie> findAllMovies() {
         return movieRepository.findAll();
     }
 }
