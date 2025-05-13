@@ -16,34 +16,22 @@ public class PostService {
     private PostRepository postRepository;
 
     public Post addPost(Post post) {
-        Post newPost = postRepository.save(post);
-        newPost.getUser().setPassword("");
-        return newPost;
+        return postRepository.save(post);
     }
 
     public Post findPostById(int id) {
         Post post;
         post = postRepository.findById(id)
                 .orElse(null);
-        if (post != null)
-            post.getUser().setPassword("");
         return post;
     }
 
     public List<Post> findPostsByBoard(Board board) {
-        List<Post> posts = postRepository.findByBoard(board);
-        for (Post p : posts) {
-            p.getUser().setPassword("");
-        }
-        return posts;
+        return postRepository.findByBoard(board);
     }
 
     public List<Post> findPostsByUser(User user) {
-        List<Post> posts = postRepository.findByUser(user);
-        for (Post p : posts) {
-            p.getUser().setPassword("");
-        }
-        return posts;
+        return postRepository.findByUser(user);
     }
 
     //TODO

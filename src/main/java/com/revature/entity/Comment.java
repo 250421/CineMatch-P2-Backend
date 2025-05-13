@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -30,6 +32,10 @@ public class Comment {
     @Column(name = "text", nullable = false)
     private String text;
 
+    @Column(name = "created")
+    @CreationTimestamp
+    private LocalDateTime created;
+
     @Column(name = "rating", nullable = false)
     private int rating;
 
@@ -49,6 +55,7 @@ public class Comment {
                 && Objects.equals(getPost(), other.getPost())
                 && Objects.equals(getUser(), other.getUser())
                 && Objects.equals(getText(), other.getText())
+                && Objects.equals(getCreated(), other.getCreated())
                 && Objects.equals(getRating(), other.getRating())
                 && Objects.equals(getDeleted(), other.getDeleted());
     }
@@ -60,6 +67,7 @@ public class Comment {
                 ", post = '" + post.getTitle() + '\'' +
                 ", user = '" + user.getUsername() + '\'' +
                 ", text = '" + text + '\'' +
+                ", created = '" + created + '\'' +
                 ", rating = '" + rating + '\'' +
                 ", deleted = '" + deleted + '\'' +
                 '}';

@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -36,6 +38,13 @@ public class Post {
     @Column(name = "text")
     private String text;
 
+    @Column(name = "created")
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    @Column(name = "has_spoiler")
+    private int hasSpoiler;
+
     @Column(name = "rating", nullable = false)
     private int rating;
 
@@ -57,6 +66,8 @@ public class Post {
                 && Objects.equals(getTitle(), other.getTitle())
                 && Objects.equals(getImage(), other.getImage())
                 && Objects.equals(getText(), other.getText())
+                && Objects.equals(getCreated(), other.getCreated())
+                && Objects.equals(getHasSpoiler(), other.getHasSpoiler())
                 && Objects.equals(getRating(), other.getRating())
                 && Objects.equals(getDeleted(), other.getDeleted());
     }
@@ -70,6 +81,8 @@ public class Post {
                 ", title = '" + title + '\'' +
                 ", image = '" + image + '\'' +
                 ", text = '" + text + '\'' +
+                ", created = '" + created + '\'' +
+                ", has spoiler = '" + hasSpoiler + '\'' +
                 ", rating = '" + rating + '\'' +
                 ", deleted = '" + deleted + '\'' +
                 '}';
