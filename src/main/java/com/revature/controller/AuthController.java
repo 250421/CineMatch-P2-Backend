@@ -90,11 +90,12 @@ public class AuthController {
     @GetMapping("/auth/session")
     public @ResponseBody ResponseEntity<?> session(HttpSession session, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String principal = (String) authentication.getPrincipal();
+        System.out.println(authentication.getPrincipal());
+        Principal principal = (Principal) authentication.getPrincipal();
         if (principal == null)
             return ResponseEntity.status(401).body(Response.stringResponse("No active session."));
         else {
-            String username = principal;
+            String username = principal.getName();
             String role = userService.findUserByUsername(username).getRole().name();
             return ResponseEntity.status(200).body(Response.sessionResponse(session.getId(), username, role));
         }
