@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,7 +89,8 @@ public class AuthController {
      */
     @GetMapping("/auth/session")
     public @ResponseBody ResponseEntity<?> session(HttpSession session, HttpServletRequest request) {
-        Principal principal = request.getUserPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Principal principal = (Principal) authentication.getPrincipal();
         if (principal == null)
             return ResponseEntity.status(401).body(Response.stringResponse("No active session."));
         else {
