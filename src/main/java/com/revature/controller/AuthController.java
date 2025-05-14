@@ -92,6 +92,7 @@ public class AuthController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(auth.getName());
         System.out.println(auth.isAuthenticated());
+        System.out.println(request.getUserPrincipal().getName());
         Principal principal = request.getUserPrincipal();
         if (principal == null)
             return ResponseEntity.status(401).body(Response.stringResponse("No active session."));
