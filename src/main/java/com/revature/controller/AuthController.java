@@ -90,7 +90,7 @@ public class AuthController {
     @GetMapping("/auth/session")
     public @ResponseBody ResponseEntity<?> session(HttpSession session, HttpServletRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(auth.getPrincipal().toString());
+        System.out.println(auth.getName());
         System.out.println(auth.isAuthenticated());
         Principal principal = request.getUserPrincipal();
         if (principal == null)
