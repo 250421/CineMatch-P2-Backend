@@ -73,10 +73,26 @@ public class BoardController {
         post.setBoard(board);
         post.setRating(0);
         post.setDeleted(0);
-        return ResponseEntity.status(201).body(postService.addPost(post));
+        return ResponseEntity.status(201).body(Response.postResponse(postService.addPost(post)));
     }
 
-    //Edit a post TODO
+    //Edit a post
+    @PatchMapping("/api/post")
+    public @ResponseBody ResponseEntity<?> editPost(@RequestBody Post post, HttpServletRequest request) {
+        Post oldPost = postService.findPostById(post.getId());
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        if (oldPost != null) {
+            if (user.equals(oldPost.getUser())) {
+                oldPost.setTitle(post.getTitle());
+                oldPost.setText(post.getText());
+                oldPost.setImage(post.getImage());
+                oldPost.setHasSpoiler(post.getHasSpoiler());
+                return ResponseEntity.status(201).body(Response.postResponse(postService.addPost(oldPost)));
+            }
+            else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
+        }
+        else return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
+    }
 
     //Rate a post TODO
 
@@ -101,7 +117,7 @@ public class BoardController {
     public @ResponseBody ResponseEntity<?> getPostById(@PathVariable int id) {
         Post post = postService.findPostById(id);
         if (post != null)
-            return ResponseEntity.status(200).body(post);
+            return ResponseEntity.status(200).body(Response.postResponse(post));
         else return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
     }
 
@@ -111,7 +127,7 @@ public class BoardController {
         Board board = boardService.findBoardById(id);
         if (board == null)
             return ResponseEntity.status(404).body(Response.stringResponse("Board not found."));
-        return ResponseEntity.status(200).body(postService.findPostsByBoard(board));
+        return ResponseEntity.status(200).body(Response.postListResponse(postService.findPostsByBoard(board)));
     }
 
     //Add a new comment
@@ -129,10 +145,23 @@ public class BoardController {
         comment.setPost(post);
         comment.setRating(0);
         comment.setDeleted(0);
-        return ResponseEntity.status(201).body(commentService.addComment(comment));
+        return ResponseEntity.status(201).body(Response.commentResponse(commentService.addComment(comment)));
     }
 
-    //Edit a comment TODO
+    //Edit a comment
+    @PatchMapping("/api/comment")
+    public @ResponseBody ResponseEntity<?> editComment(@RequestBody Comment comment, HttpServletRequest request) {
+        Comment oldComment = commentService.findCommentById(comment.getId());
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        if (oldComment != null) {
+            if (user.equals(oldComment.getUser())) {
+                oldComment.setText(comment.getText());
+                return ResponseEntity.status(201).body(Response.commentResponse(commentService.addComment(oldComment)));
+            }
+            else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
+        }
+        else return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
+    }
 
     //Rate a comment TODO
 
@@ -157,7 +186,7 @@ public class BoardController {
     public @ResponseBody ResponseEntity<?> getCommentById(@PathVariable int id) {
         Comment comment = commentService.findCommentById(id);
         if (comment != null)
-            return ResponseEntity.status(200).body(comment);
+            return ResponseEntity.status(200).body(Response.commentResponse(comment));
         else return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
     }
 
@@ -167,6 +196,6 @@ public class BoardController {
         Post post = postService.findPostById(id);
         if (post == null)
             return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
-        return ResponseEntity.status(200).body(commentService.findCommentsByPost(post));
+        return ResponseEntity.status(200).body(Response.commentListResponse(commentService.findCommentsByPost(post)));
     }
 }
