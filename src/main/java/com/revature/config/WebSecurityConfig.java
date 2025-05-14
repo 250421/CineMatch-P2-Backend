@@ -63,7 +63,6 @@ public class WebSecurityConfig {
 //                        .maxSessionsPreventsLogin(true)
                         .expiredUrl("/sessionExpired")
                 )
-                .addFilter(new SecurityContextHolderAwareRequestFilter())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
