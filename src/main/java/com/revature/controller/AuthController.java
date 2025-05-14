@@ -88,6 +88,7 @@ public class AuthController {
      */
     @GetMapping("/auth/session")
     public @ResponseBody ResponseEntity<?> session(HttpSession session, HttpServletRequest request) {
+        System.out.println(session.getId());
         Principal principal = request.getUserPrincipal();
         if (principal == null)
             return ResponseEntity.status(401).body(Response.stringResponse("No active session."));
