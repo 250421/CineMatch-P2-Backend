@@ -31,6 +31,12 @@ public class Response {
         Map<String, Object> response = new HashMap<>();
         response.put("id", post.getId());
         response.put("username", post.getUser().getUsername());
+        response.put("title", post.getTitle());
+        response.put("image", post.getImage());
+        response.put("text", post.getText());
+        response.put("has_spoiler", post.getHasSpoiler());
+        response.put("rating", post.getRating());
+        response.put("deleted", post.getDeleted());
         return response;
     }
 
@@ -40,6 +46,12 @@ public class Response {
             Map<String, Object> m = new HashMap<>();
             m.put("id", p.getId());
             m.put("username", p.getUser().getUsername());
+            m.put("title", p.getTitle());
+            m.put("image", p.getImage());
+            m.put("text", p.getText());
+            m.put("has_spoiler", p.getHasSpoiler());
+            m.put("rating", p.getRating());
+            m.put("deleted", p.getDeleted());
             response.add(m);
         }
         return response;
@@ -49,6 +61,9 @@ public class Response {
         Map<String, Object> response = new HashMap<>();
         response.put("id", comment.getId());
         response.put("username", comment.getUser().getUsername());
+        response.put("text", comment.getText());
+        response.put("rating", comment.getRating());
+        response.put("deleted", comment.getDeleted());
         return response;
     }
 
@@ -58,6 +73,9 @@ public class Response {
             Map<String, Object> m = new HashMap<>();
             m.put("id", c.getId());
             m.put("username", c.getUser().getUsername());
+            m.put("text", c.getText());
+            m.put("rating", c.getRating());
+            m.put("deleted", c.getDeleted());
             response.add(m);
         }
         return response;
