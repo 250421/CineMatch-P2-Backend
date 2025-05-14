@@ -118,7 +118,9 @@ public class WebSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("*");
+                        .allowedMethods("*")
+                        .allowedOrigins("http://localhost:5173", "http://3.134.54.76")
+                        .allowCredentials(true);
             }
         };
     }

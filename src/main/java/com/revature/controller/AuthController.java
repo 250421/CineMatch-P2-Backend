@@ -19,7 +19,6 @@ import com.revature.service.UserService;
 import com.revature.service.AuthService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthController {
 
     @Autowired

@@ -13,7 +13,6 @@ import com.revature.service.GenreService;
 import com.revature.service.MovieService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class MovieController {
 
     @Autowired
