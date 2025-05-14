@@ -10,10 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,11 +87,7 @@ public class AuthController {
      *         Status code 200 with session ID, username, role if active session
      */
     @GetMapping("/auth/session")
-    public @ResponseBody ResponseEntity<?> session(HttpSession session, HttpServletRequest request, @CurrentSecurityContext SecurityContext context) {
-        Authentication auth = context.getAuthentication();
-        System.out.println(auth.getName());
-        System.out.println(auth.isAuthenticated());
-        System.out.println(auth.getPrincipal());
+    public @ResponseBody ResponseEntity<?> session(HttpSession session, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal == null)
             return ResponseEntity.status(401).body(Response.stringResponse("No active session."));
