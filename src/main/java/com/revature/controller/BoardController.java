@@ -19,13 +19,10 @@ public class BoardController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private BoardService boardService;
-
     @Autowired
     private PostService postService;
-
     @Autowired
     private CommentService commentService;
 

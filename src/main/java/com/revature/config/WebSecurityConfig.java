@@ -45,6 +45,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/genre/**", "/api/movie/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/genre/**", "/api/movie/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/genre", "/api/movie", "/api/board").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/genre/favorite", "/api/movie/favorite").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/board", "/api/board/*").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/board", "/api/board/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/board/*/post").hasAnyRole("USER", "ADMIN")
