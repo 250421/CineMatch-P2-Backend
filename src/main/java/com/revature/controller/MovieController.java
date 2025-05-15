@@ -99,7 +99,17 @@ public class MovieController {
         return ResponseEntity.status(200).body(movieService.findAllMovies());
     }
 
-    //Set current user's favorite movies TODO
+    //Set current user's favorite movies with list of movie ids
+    @PostMapping("/api/movie/favorite")
+    public @ResponseBody ResponseEntity<?> addFavoriteMoviesById(@RequestBody Iterable<Integer> movies, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        return ResponseEntity.status(201).body(movieService.setFavoriteMoviesById(user, movies));
+    }
 
-    //Get current user's favorite movies TODO
+    //Get current user's favorite movies
+    @GetMapping("/api/movie/favorite")
+    public @ResponseBody ResponseEntity<?> getFavoriteMovies(HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        return ResponseEntity.status(200).body(movieService.getFavoriteMovies(user));
+    }
 }
