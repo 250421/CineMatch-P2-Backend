@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="user", schema = "p2")
@@ -41,6 +42,30 @@ public class User {
 
     @Column(name="genre_changed_time")
     private LocalDateTime genreChangedTime;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_posts_favorited",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private Set<Post> favoritedPosts;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_comments_favorited",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "comment_id")
+    )
+    private Set<Comment> favoritedComments;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_movies_favorited",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private Set<Movie> favoritedMovies;
 
     public User(String username, String password) {
         this.username = username;

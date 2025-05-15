@@ -95,6 +95,12 @@ public class BoardController {
     }
 
     //Rate a post TODO
+    @PatchMapping("/api/post/{id}")
+    public @ResponseBody ResponseEntity<?> ratePostById(@PathVariable int id, @RequestBody int rating, HttpServletRequest request) {
+        Post post = postService.findPostById(id);
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        return null;
+    }
 
     //Delete a post
     @DeleteMapping("/api/post/{id}")
