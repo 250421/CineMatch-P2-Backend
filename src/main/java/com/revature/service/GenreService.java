@@ -42,7 +42,14 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
-    public List<String> setFavoriteGenres(User user, List<String> genres) {
+    public List<String> setFavoriteGenres(User user, List<Integer> ids) {
+        ArrayList<String> genres = new ArrayList<>(3);
+        for (int id : ids) {
+            Genre genre = findGenreById(id);
+            if (genre != null)
+                genres.add(genre.getName());
+            else genres.add(null);
+        }
         user.setGenre_1(genres.get(0));
         user.setGenre_2(genres.get(1));
         user.setGenre_3(genres.get(2));

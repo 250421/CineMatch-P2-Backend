@@ -55,9 +55,9 @@ public class MovieController {
         return ResponseEntity.status(200).body(genreService.findAllGenres());
     }
 
-    //Set current user's favorite genres
+    //Set current user's favorite genres with list of genre ids
     @PostMapping("/api/genre/favorite")
-    public @ResponseBody ResponseEntity<?> setFavoriteGenres(@RequestBody List<String> genres, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity<?> setFavoriteGenres(@RequestBody List<Integer> genres, HttpServletRequest request) {
         if (genres.size() != 3)
             return ResponseEntity.status(400).body(Response.stringResponse("Genre list length must be 3."));
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
