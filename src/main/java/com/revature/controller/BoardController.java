@@ -93,12 +93,17 @@ public class BoardController {
         else return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
     }
 
-    //Rate a post TODO
+    //Rate a post
     @PatchMapping("/api/post/{id}")
-    public @ResponseBody ResponseEntity<?> ratePostById(@PathVariable int id, @RequestBody int rating, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity<?> ratePostById(@PathVariable int id, @RequestBody Integer rating, HttpServletRequest request) {
+        if (rating > 1 || rating < -1)
+            return ResponseEntity.status(400).body(Response.stringResponse("Rating must be 1, 0, or -1."));
         Post post = postService.findPostById(id);
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
-        return null;
+        if (post != null) {
+            return ResponseEntity.status(201).body(Response.postResponse(postService.ratePost(post, user, rating)));
+        }
+        else return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
     }
 
     //Delete a post

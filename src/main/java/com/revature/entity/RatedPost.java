@@ -30,6 +30,12 @@ public class RatedPost {
     @Column(name = "rating")
     private int rating;
 
+    public RatedPost(User user, Post post, int rating) {
+        this.user = user;
+        this.post = post;
+        this.rating = rating;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

@@ -2,8 +2,10 @@ package com.revature.service;
 
 import com.revature.entity.Board;
 import com.revature.entity.Post;
+import com.revature.entity.RatedPost;
 import com.revature.entity.User;
 import com.revature.repository.PostRepository;
+import com.revature.repository.RatedPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,9 @@ public class PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private RatedPostRepository ratedPostRepository;
 
     public Post addPost(Post post) {
         return postRepository.save(post);
@@ -34,8 +39,22 @@ public class PostService {
         return postRepository.findByUser(user);
     }
 
-    //TODO
-    public void ratePost(int rating) {
-
+    public Post ratePost(Post post, User user, int rating) {
+        RatedPost currentRP = ratedPostRepository.findByUserAndPost(user, post).orElse(null);
+        int currentRating = 0;
+        if (currentRP != null) {
+            currentRating = currentRP.getRating();
+            if (rating == 0)
+                ratedPostRepository.delete(currentRP);
+            else {
+                currentRP.setRating(rating);
+                ratedPostRepository.save(currentRP);
+            }
+        }
+        else if (rating != 0)
+            ratedPostRepository.save(new RatedPost(user, post, rating));
+        int diff = rating - currentRating;
+        post.setRating(post.getRating() + diff);
+        return postRepository.save(post);
     }
 }
