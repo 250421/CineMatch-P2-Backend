@@ -173,7 +173,18 @@ public class BoardController {
         else return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
     }
 
-    //Rate a comment TODO
+    //Rate a comment
+    @PatchMapping("/api/comment/{id}")
+    public @ResponseBody ResponseEntity<?> rateCommentById(@PathVariable int id, @RequestBody Integer rating, HttpServletRequest request) {
+        if (rating > 1 || rating < -1)
+            return ResponseEntity.status(400).body(Response.stringResponse("Rating must be 1, 0, or -1."));
+        Comment comment = commentService.findCommentById(id);
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        if (comment != null) {
+            return ResponseEntity.status(201).body(Response.commentResponse(commentService.rateComment(comment, user, rating)));
+        }
+        else return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
+    }
 
     //Delete a comment
     @DeleteMapping("/api/comment/{id}")
