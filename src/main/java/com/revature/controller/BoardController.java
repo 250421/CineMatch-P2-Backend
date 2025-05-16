@@ -137,7 +137,7 @@ public class BoardController {
         return ResponseEntity.status(200).body(Response.postListResponse(postService.findPostsByBoard(board)));
     }
 
-    //Add a favorite post
+    //Add a favorited post
     @PostMapping("/api/post/favorite")
     public @ResponseBody ResponseEntity<?> addFavoritedPostById(@RequestBody Integer id, HttpServletRequest request) {
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
@@ -147,17 +147,17 @@ public class BoardController {
         return ResponseEntity.status(201).body(Response.postResponse(post));
     }
 
-    //Remove a favorite post
+    //Remove a favorited post
     @DeleteMapping("/api/post/favorite")
     public @ResponseBody ResponseEntity<?> removeFavoritedPostById(@RequestBody Integer id, HttpServletRequest request) {
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
         boolean removed = postService.removeFavoritedPostById(id, user);
         if (removed)
-            return ResponseEntity.status(200).body(Response.stringResponse("Post removed from favorites."));
-        else return ResponseEntity.status(404).body(Response.stringResponse("Post not in favorites."));
+            return ResponseEntity.status(200).body(Response.stringResponse("Post removed from favorited."));
+        else return ResponseEntity.status(404).body(Response.stringResponse("Post not in favorited."));
     }
 
-    //Get current user's favorite posts
+    //Get current user's favorited posts
     @GetMapping("/api/post/favorite")
     public @ResponseBody ResponseEntity<?> getFavoritedPosts(HttpServletRequest request) {
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
@@ -242,5 +242,32 @@ public class BoardController {
         if (post == null)
             return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
         return ResponseEntity.status(200).body(Response.commentListResponse(commentService.findCommentsByPost(post)));
+    }
+
+    //Add a favorited comment
+    @PostMapping("/api/comment/favorite")
+    public @ResponseBody ResponseEntity<?> addFavoritedCommentById(@RequestBody Integer id, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        Comment comment = commentService.addFavoritedCommentById(id, user);
+        if (comment == null)
+            return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
+        return ResponseEntity.status(201).body(Response.commentResponse(comment));
+    }
+
+    //Remove a favorited comment
+    @DeleteMapping("/api/comment/favorite")
+    public @ResponseBody ResponseEntity<?> removeFavoritedCommentById(@RequestBody Integer id, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        boolean removed = commentService.removeFavoritedCommentById(id, user);
+        if (removed)
+            return ResponseEntity.status(200).body(Response.stringResponse("Comment removed from favorited."));
+        else return ResponseEntity.status(404).body(Response.stringResponse("Comment not in favorited."));
+    }
+
+    //Get current user's favorited comments
+    @GetMapping("/api/comment/favorite")
+    public @ResponseBody ResponseEntity<?> getFavoritedComments(HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        return ResponseEntity.status(200).body(Response.commentListResponse(commentService.getFavoritedComments(user)));
     }
 }

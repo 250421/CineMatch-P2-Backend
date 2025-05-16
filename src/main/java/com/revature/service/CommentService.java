@@ -56,4 +56,25 @@ public class CommentService {
         comment.setRating(comment.getRating() + diff);
         return commentRepository.save(comment);
     }
+
+    public Comment addFavoritedCommentById(int id, User user) {
+        Comment comment = findCommentById(id);
+        if (comment != null) {
+            user.getFavoritedComments().add(comment);
+            userRepository.save(user);
+            return comment;
+        }
+        else return null;
+    }
+
+    public boolean removeFavoritedCommentById(int id, User user) {
+        Comment comment = findCommentById(id);
+        boolean removed = user.getFavoritedComments().remove(comment);
+        userRepository.save(user);
+        return removed;
+    }
+
+    public List<Comment> getFavoritedComments(User user) {
+        return List.copyOf(user.getFavoritedComments());
+    }
 }
