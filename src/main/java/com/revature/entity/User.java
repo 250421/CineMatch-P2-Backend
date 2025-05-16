@@ -46,6 +46,7 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "user_posts_favorited",
+            schema = "p2",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id")
     )
@@ -54,6 +55,7 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "user_comments_favorited",
+            schema = "p2",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id")
     )
@@ -62,6 +64,7 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "user_movies_favorited",
+            schema = "p2",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id")
     )

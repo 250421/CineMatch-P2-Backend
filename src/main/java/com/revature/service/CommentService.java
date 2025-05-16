@@ -3,6 +3,7 @@ package com.revature.service;
 import com.revature.entity.*;
 import com.revature.repository.CommentRepository;
 import com.revature.repository.RatedCommentRepository;
+import com.revature.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,10 @@ public class CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     private RatedCommentRepository ratedCommentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Comment addComment(Comment comment) {
         return commentRepository.save(comment);
@@ -53,5 +55,26 @@ public class CommentService {
         int diff = rating - currentRating;
         comment.setRating(comment.getRating() + diff);
         return commentRepository.save(comment);
+    }
+
+    public Comment addFavoritedCommentById(int id, User user) {
+        Comment comment = findCommentById(id);
+        if (comment != null) {
+            user.getFavoritedComments().add(comment);
+            userRepository.save(user);
+            return comment;
+        }
+        else return null;
+    }
+
+    public boolean removeFavoritedCommentById(int id, User user) {
+        Comment comment = findCommentById(id);
+        boolean removed = user.getFavoritedComments().remove(comment);
+        userRepository.save(user);
+        return removed;
+    }
+
+    public List<Comment> getFavoritedComments(User user) {
+        return List.copyOf(user.getFavoritedComments());
     }
 }

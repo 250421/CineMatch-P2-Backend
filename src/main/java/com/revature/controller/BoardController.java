@@ -20,13 +20,10 @@ public class BoardController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private BoardService boardService;
-
     @Autowired
     private PostService postService;
-
     @Autowired
     private CommentService commentService;
 
@@ -141,6 +138,33 @@ public class BoardController {
         return ResponseEntity.status(200).body(Response.postListResponse(postService.findPostsByBoard(board)));
     }
 
+    //Add a favorited post
+    @PostMapping("/api/post/favorite")
+    public @ResponseBody ResponseEntity<?> addFavoritedPostById(@RequestBody Integer id, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        Post post = postService.addFavoritedPostById(id, user);
+        if (post == null)
+            return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
+        return ResponseEntity.status(201).body(Response.postResponse(post));
+    }
+
+    //Remove a favorited post
+    @DeleteMapping("/api/post/favorite")
+    public @ResponseBody ResponseEntity<?> removeFavoritedPostById(@RequestBody Integer id, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        boolean removed = postService.removeFavoritedPostById(id, user);
+        if (removed)
+            return ResponseEntity.status(200).body(Response.stringResponse("Post removed from favorited."));
+        else return ResponseEntity.status(404).body(Response.stringResponse("Post not in favorited."));
+    }
+
+    //Get current user's favorited posts
+    @GetMapping("/api/post/favorite")
+    public @ResponseBody ResponseEntity<?> getFavoritedPosts(HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        return ResponseEntity.status(200).body(Response.postListResponse(postService.getFavoritedPosts(user)));
+    }
+
     //Add a new comment
     @PostMapping("/api/post/{id}/comment")
     public @ResponseBody ResponseEntity<?> addComment(@PathVariable int id, @RequestBody Comment comment, HttpServletRequest request) {
@@ -219,5 +243,32 @@ public class BoardController {
         if (post == null)
             return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));
         return ResponseEntity.status(200).body(Response.commentListResponse(commentService.findCommentsByPost(post)));
+    }
+
+    //Add a favorited comment
+    @PostMapping("/api/comment/favorite")
+    public @ResponseBody ResponseEntity<?> addFavoritedCommentById(@RequestBody Integer id, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        Comment comment = commentService.addFavoritedCommentById(id, user);
+        if (comment == null)
+            return ResponseEntity.status(404).body(Response.stringResponse("Comment not found."));
+        return ResponseEntity.status(201).body(Response.commentResponse(comment));
+    }
+
+    //Remove a favorited comment
+    @DeleteMapping("/api/comment/favorite")
+    public @ResponseBody ResponseEntity<?> removeFavoritedCommentById(@RequestBody Integer id, HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        boolean removed = commentService.removeFavoritedCommentById(id, user);
+        if (removed)
+            return ResponseEntity.status(200).body(Response.stringResponse("Comment removed from favorited."));
+        else return ResponseEntity.status(404).body(Response.stringResponse("Comment not in favorited."));
+    }
+
+    //Get current user's favorited comments
+    @GetMapping("/api/comment/favorite")
+    public @ResponseBody ResponseEntity<?> getFavoritedComments(HttpServletRequest request) {
+        User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        return ResponseEntity.status(200).body(Response.commentListResponse(commentService.getFavoritedComments(user)));
     }
 }

@@ -6,6 +6,7 @@ import com.revature.entity.RatedPost;
 import com.revature.entity.User;
 import com.revature.repository.PostRepository;
 import com.revature.repository.RatedPostRepository;
+import com.revature.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,10 @@ public class PostService {
 
     @Autowired
     private PostRepository postRepository;
-
     @Autowired
     private RatedPostRepository ratedPostRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Post addPost(Post post, MultipartFile imageFile) {
 
@@ -58,5 +60,26 @@ public class PostService {
         int diff = rating - currentRating;
         post.setRating(post.getRating() + diff);
         return postRepository.save(post);
+    }
+
+    public Post addFavoritedPostById(int id, User user) {
+        Post post = findPostById(id);
+        if (post != null) {
+            user.getFavoritedPosts().add(post);
+            userRepository.save(user);
+            return post;
+        }
+        else return null;
+    }
+
+    public boolean removeFavoritedPostById(int id, User user) {
+        Post post = findPostById(id);
+        boolean removed = user.getFavoritedPosts().remove(post);
+        userRepository.save(user);
+        return removed;
+    }
+
+    public List<Post> getFavoritedPosts(User user) {
+        return List.copyOf(user.getFavoritedPosts());
     }
 }
