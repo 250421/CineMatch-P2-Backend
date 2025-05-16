@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -59,7 +60,7 @@ public class BoardController {
 
     //Add a new post
     @PostMapping("/api/board/{id}/post")
-    public @ResponseBody ResponseEntity<?> addPost(@PathVariable int id, @RequestBody Post post, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity<?> addPost(@PathVariable int id, @RequestPart Post post, @RequestPart MultipartFile imageFile, HttpServletRequest request) {
         Board board = boardService.findBoardById(id);
         if (board == null)
             return ResponseEntity.status(404).body(Response.stringResponse("Board not found."));

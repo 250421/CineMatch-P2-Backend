@@ -8,6 +8,7 @@ import com.revature.repository.PostRepository;
 import com.revature.repository.RatedPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,7 +21,8 @@ public class PostService {
     @Autowired
     private RatedPostRepository ratedPostRepository;
 
-    public Post addPost(Post post) {
+    public Post addPost(Post post, MultipartFile imageFile) {
+
         return postRepository.save(post);
     }
 
