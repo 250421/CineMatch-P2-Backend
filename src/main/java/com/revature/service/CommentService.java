@@ -3,6 +3,7 @@ package com.revature.service;
 import com.revature.entity.*;
 import com.revature.repository.CommentRepository;
 import com.revature.repository.RatedCommentRepository;
+import com.revature.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,10 @@ public class CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     private RatedCommentRepository ratedCommentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Comment addComment(Comment comment) {
         return commentRepository.save(comment);
