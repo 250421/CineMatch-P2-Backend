@@ -8,6 +8,7 @@ import com.revature.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class GenreService {
         return genreRepository.save(genre);
     }
 
-    public List<Genre> addGenres(List<Genre> genres) {
-        return genreRepository.saveAll(genres);
+    public List<Genre> addGenres(List<Genre> genres) {return genreRepository.saveAll(genres);
     }
 
     public Genre findGenreById(int id) {
@@ -53,6 +53,7 @@ public class GenreService {
         user.setGenre_1(genres.get(0));
         user.setGenre_2(genres.get(1));
         user.setGenre_3(genres.get(2));
+        user.setGenreChangedTime(LocalDateTime.now());
         userRepository.save(user);
         return getFavoriteGenres(user);
     }

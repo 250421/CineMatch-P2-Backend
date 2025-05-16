@@ -15,6 +15,8 @@ import com.revature.entity.Movie;
 import com.revature.service.GenreService;
 import com.revature.service.MovieService;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -40,6 +42,19 @@ public class MovieController {
         return ResponseEntity.status(201).body(newGenre);
     }
 
+    //Add multiple genres from list, cannot have duplicates
+    @PostMapping("/api/genres")
+    public @ResponseBody ResponseEntity<?> addGenres(@RequestBody List<Genre> genres) {
+        try {
+            genreService.addGenres(genres);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(409)
+                    .body(Response.stringResponse("Error adding genres, make sure there are no duplicates in list."));
+        }
+        return ResponseEntity.status(201).body(genres);
+    }
+
     //Get one genre
     @GetMapping("/api/genre/{id}")
     public @ResponseBody ResponseEntity<?> getGenreById(@PathVariable int id) {
@@ -61,6 +76,11 @@ public class MovieController {
         if (genres.size() != 3)
             return ResponseEntity.status(400).body(Response.stringResponse("Genre list length must be 3."));
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
+        //Check time favorite genres were last set and allow if more than 24 hours have passed
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(user.getGenreChangedTime(), now);
+        if (duration.toHours() < 24)
+            return ResponseEntity.status(400).body(Response.stringResponse("Favorite genres can only be changed once every 24 hours"));
         return ResponseEntity.status(201).body(genreService.setFavoriteGenres(user, genres));
     }
 
