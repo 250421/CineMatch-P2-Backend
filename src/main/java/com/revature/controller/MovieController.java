@@ -77,10 +77,12 @@ public class MovieController {
             return ResponseEntity.status(400).body(Response.stringResponse("Genre list length must be 3."));
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
         //Check time favorite genres were last set and allow if more than 24 hours have passed
-        LocalDateTime now = LocalDateTime.now();
-        Duration duration = Duration.between(user.getGenreChangedTime(), now);
-        if (duration.toHours() < 24)
-            return ResponseEntity.status(400).body(Response.stringResponse("Favorite genres can only be changed once every 24 hours"));
+        if (user.getGenreChangedTime() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            Duration duration = Duration.between(user.getGenreChangedTime(), now);
+            if (duration.toHours() < 24)
+                return ResponseEntity.status(400).body(Response.stringResponse("Favorite genres can only be changed once every 24 hours"));
+        }
         return ResponseEntity.status(201).body(genreService.setFavoriteGenres(user, genres));
     }
 

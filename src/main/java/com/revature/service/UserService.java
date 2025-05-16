@@ -38,7 +38,6 @@ public class UserService {
             throw new InvalidPasswordException("");
         else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setGenreChangedTime(LocalDateTime.now());
             return userRepository.save(user);
         }
     }
