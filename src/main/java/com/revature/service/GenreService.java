@@ -28,7 +28,14 @@ public class GenreService {
         return genreRepository.save(genre);
     }
 
-    public List<Genre> addGenres(List<Genre> genres) {return genreRepository.saveAll(genres);
+    public List<Genre> addGenres(List<Genre> genres) {
+        for (Genre genre : genres) {
+            Genre newGenre = genreRepository.findByName(genre.getName()).orElse(null);
+            if (newGenre == null) {
+                genreRepository.save(genre);
+            }
+        }
+        return findAllGenres();
     }
 
     public Genre findGenreById(int id) {

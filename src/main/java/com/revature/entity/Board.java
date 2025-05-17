@@ -22,6 +22,10 @@ public class Board {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    public Board(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

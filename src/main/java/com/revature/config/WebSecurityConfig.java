@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/post/*", "/api/comment/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/post/favorite", "/api/comment/favorite").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/post/favorite", "/api/comment/favorite").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/trakt").hasRole("ADMIN")
                         .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated()
                 )

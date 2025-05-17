@@ -42,17 +42,10 @@ public class MovieController {
         return ResponseEntity.status(201).body(newGenre);
     }
 
-    //Add multiple genres from list, cannot have duplicates
+    //Add multiple genres from list, ignores duplicates
     @PostMapping("/api/genres")
     public @ResponseBody ResponseEntity<?> addGenres(@RequestBody List<Genre> genres) {
-        try {
-            genreService.addGenres(genres);
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(409)
-                    .body(Response.stringResponse("Error adding genres, make sure there are no duplicates in list."));
-        }
-        return ResponseEntity.status(201).body(genres);
+        return ResponseEntity.status(201).body(genreService.addGenres(genres));
     }
 
     //Get one genre
