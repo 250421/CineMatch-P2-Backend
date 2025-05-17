@@ -1,12 +1,9 @@
 package com.revature;
 
 import com.revature.entity.*;
-import com.revature.exception.BoardAlreadyExistsException;
-import com.revature.repository.BoardRepository;
 import com.revature.repository.CommentRepository;
 import com.revature.repository.RatedCommentRepository;
 import com.revature.repository.UserRepository;
-import com.revature.service.BoardService;
 import com.revature.service.CommentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
