@@ -90,7 +90,6 @@ public class BoardController {
                 } catch(PostImageFailedException e) {
                     return ResponseEntity.status(502).body(e.getMessage());
                 }
-
             }
             else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
         }

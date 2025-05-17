@@ -37,9 +37,6 @@ public class PostService {
 
     private final String bucketName = "cinematch-storage";
 
-
-
-
     public String createPostImagePresignedURL(String bucketName, String keyName) {
         try (S3Presigner presigner = S3Presigner.create()) {
             GetObjectRequest objectRequest = GetObjectRequest.builder()
@@ -59,11 +56,8 @@ public class PostService {
     }
 
     public Post addPost(Post post, MultipartFile imageFile) {
-
         S3Client client = S3Client.builder().build();
-
         try {
-
             if (imageFile != null) {
                 if (post.getImage() != null && !post.getImage().isBlank()) {
                     try {
@@ -99,7 +93,6 @@ public class PostService {
         }
         return postRepository.save(post);
     }
-
 
     public Post findPostById(int id) {
         Post post;
