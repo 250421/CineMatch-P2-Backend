@@ -2,10 +2,7 @@ package com.revature.controller;
 
 import com.revature.entity.*;
 import com.revature.exception.BoardAlreadyExistsException;
-import com.revature.service.BoardService;
-import com.revature.service.CommentService;
-import com.revature.service.PostService;
-import com.revature.service.UserService;
+import com.revature.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
