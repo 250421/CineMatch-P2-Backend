@@ -3,6 +3,7 @@ package com.revature.controller;
 import com.revature.entity.*;
 import com.revature.exception.BoardAlreadyExistsException;
 import com.revature.service.*;
+import com.revature.exception.PostImageFailedException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class BoardController {
 
     //Add a new post
     @PostMapping("/api/board/{id}/post")
-    public @ResponseBody ResponseEntity<?> addPost(@PathVariable int id, @RequestPart Post post, @RequestPart MultipartFile imageFile, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity<?> addPost(@PathVariable int id, @RequestPart Post post, @RequestPart(required = false) MultipartFile imageFile, HttpServletRequest request) {
         Board board = boardService.findBoardById(id);
         if (board == null)
             return ResponseEntity.status(404).body(Response.stringResponse("Board not found."));
@@ -67,21 +68,29 @@ public class BoardController {
         post.setBoard(board);
         post.setRating(0);
         post.setDeleted(0);
-        return ResponseEntity.status(201).body(Response.postResponse(postService.addPost(post)));
+        try {
+            return ResponseEntity.status(201).body(Response.postResponse(postService.addPost(post, imageFile)));
+        } catch(PostImageFailedException e) {
+            return ResponseEntity.status(502).body(e.getMessage());
+        }
     }
 
     //Edit a post
     @PatchMapping("/api/post")
-    public @ResponseBody ResponseEntity<?> editPost(@RequestBody Post post, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity<?> editPost(@RequestPart Post post, @RequestPart(required = false) MultipartFile imageFile, HttpServletRequest request) {
         Post oldPost = postService.findPostById(post.getId());
         User user = userService.findUserByUsername(request.getUserPrincipal().getName());
         if (oldPost != null) {
             if (user.equals(oldPost.getUser())) {
                 oldPost.setTitle(post.getTitle());
                 oldPost.setText(post.getText());
-                oldPost.setImage(post.getImage());
                 oldPost.setHasSpoiler(post.getHasSpoiler());
-                return ResponseEntity.status(201).body(Response.postResponse(postService.addPost(oldPost)));
+                try {
+                    return ResponseEntity.status(201).body(Response.postResponse(postService.addPost(oldPost, imageFile)));
+                } catch(PostImageFailedException e) {
+                    return ResponseEntity.status(502).body(e.getMessage());
+                }
+
             }
             else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
         }
@@ -109,8 +118,12 @@ public class BoardController {
         if (post != null) {
             if (user.equals(post.getUser()) || user.getRole().equals(Role.ADMIN)) {
                 post.setDeleted(1);
-                postService.addPost(post);
-                return ResponseEntity.status(200).body(Response.stringResponse("Post deleted."));
+                try {
+                    postService.addPost(post, null);
+                    return ResponseEntity.status(200).body(Response.stringResponse("Post deleted."));
+                } catch(PostImageFailedException e) {
+                    return ResponseEntity.status(502).body(e.getMessage());
+                }
             }
             else return ResponseEntity.status(401).body(Response.stringResponse("Unauthorized."));
         }
@@ -120,7 +133,7 @@ public class BoardController {
     //Get one post
     @GetMapping("/api/post/{id}")
     public @ResponseBody ResponseEntity<?> getPostById(@PathVariable int id) {
-        Post post = postService.findPostById(id);
+        Post post = postService.findPostByIdWithImage(id);
         if (post != null)
             return ResponseEntity.status(200).body(Response.postResponse(post));
         else return ResponseEntity.status(404).body(Response.stringResponse("Post not found."));

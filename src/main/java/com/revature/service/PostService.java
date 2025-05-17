@@ -4,13 +4,25 @@ import com.revature.entity.Board;
 import com.revature.entity.Post;
 import com.revature.entity.RatedPost;
 import com.revature.entity.User;
+import com.revature.exception.PostImageFailedException;
 import com.revature.repository.PostRepository;
 import com.revature.repository.RatedPostRepository;
 import com.revature.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
+import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,24 +35,107 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
+    private final String bucketName = "cinematch-storage";
+
+
+
+
+    public String createPostImagePresignedURL(String bucketName, String keyName) {
+        try (S3Presigner presigner = S3Presigner.create()) {
+            GetObjectRequest objectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(keyName)
+                    .build();
+
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(5))
+                    .getObjectRequest(objectRequest)
+                    .build();
+
+            PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
+
+            return presignedRequest.url().toExternalForm();
+        }
+    }
+
     public Post addPost(Post post, MultipartFile imageFile) {
 
+        S3Client client = S3Client.builder().build();
+
+        try {
+
+            if (imageFile != null) {
+                if (post.getImage() != null && !post.getImage().isBlank()) {
+                    try {
+                        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                                .bucket(bucketName)
+                                .key("posts/" + post.getId() + "/" + post.getImage())
+                                .build();
+
+                        client.deleteObject(deleteObjectRequest);
+                    } catch (S3Exception e) {
+                        throw new PostImageFailedException("Failed to deal with image.");
+                    }
+                }
+                String fileName = imageFile.getOriginalFilename();
+
+                post.setImage(fileName);
+                Post savedPost = postRepository.save(post);
+
+                long postId = savedPost.getId();
+
+                PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key("posts/" + postId + "/" + fileName)
+                        .build();
+
+                client.putObject(putObjectRequest, RequestBody.fromInputStream(imageFile.getInputStream(), imageFile.getSize()));
+
+                return savedPost;
+            }
+
+        } catch (Exception e) {
+            throw new PostImageFailedException("Failed to deal with image.");
+        }
         return postRepository.save(post);
     }
+
 
     public Post findPostById(int id) {
         Post post;
         post = postRepository.findById(id)
                 .orElse(null);
+
+        return post;
+    }
+
+    public Post findPostByIdWithImage(int id) {
+        Post post;
+        post = postRepository.findById(id)
+                .orElse(null);
+
+        if (post != null && post.getImage() != null && !post.getImage().isBlank())
+            post.setImage(createPostImagePresignedURL(bucketName, "posts/" + post.getId() + "/" + post.getImage()));
+
         return post;
     }
 
     public List<Post> findPostsByBoard(Board board) {
-        return postRepository.findByBoard(board);
+        List<Post> posts = postRepository.findByBoard(board);
+        for (Post post : posts) {
+            if (post.getImage() != null && !post.getImage().isBlank())
+                post.setImage(createPostImagePresignedURL(bucketName, "posts/" + post.getId() + "/" + post.getImage()));
+        }
+        return posts;
     }
 
     public List<Post> findPostsByUser(User user) {
-        return postRepository.findByUser(user);
+        List<Post> posts = postRepository.findByUser(user);
+        for (Post post : posts) {
+            if (!post.getImage().isBlank())
+                post.setImage(createPostImagePresignedURL(bucketName, "posts/" + post.getId() + "/" + post.getImage()));
+        }
+        return posts;
     }
 
     public Post ratePost(Post post, User user, int rating) {
