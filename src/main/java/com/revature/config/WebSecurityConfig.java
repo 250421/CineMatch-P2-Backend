@@ -44,7 +44,23 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/genre/**", "/api/movie/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/api/genre/**", "/api/movie/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/genre", "/api/movie").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/genre", "/api/movie", "/api/board").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/genres", "/api/movies").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/genre/favorite", "/api/movie/favorite").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/board", "/api/board/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/board", "/api/board/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/board/*/post").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/post/**", "/api/board/*/post").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/post/**", "/api/board/*/post").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/post/*/comment").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/comment/**", "/api/post/*/comment").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/comment/**", "/api/post/*/comment").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/post", "/api/comment").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/post/**", "/api/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/post/**", "/api/comment/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/post/favorite", "/api/comment/favorite").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/post/favorite", "/api/comment/favorite").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/trakt").hasRole("ADMIN")
                         .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -108,7 +124,9 @@ public class WebSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("*");
+                        .allowedMethods("*")
+                        .allowedOrigins("http://localhost:5173", "http://3.134.54.76")
+                        .allowCredentials(true);
             }
         };
     }
