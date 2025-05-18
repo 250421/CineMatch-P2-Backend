@@ -6,6 +6,7 @@ pipeline {
             DOCKER_TAG = "${BUILD_NUMBER}"
             DB_CREDS = credentials('DB_CREDENTIALS')
             DB_URL = credentials('DB_URL')
+            S3_BUCKET_NAME = credentials('S3_BUCKET_NAME')
 	    }
 
 	    stages {
@@ -40,6 +41,7 @@ pipeline {
                             -e SPRING_DATASOURCE_URL=${DB_URL} \\
                             -e SPRING_DATASOURCE_USERNAME=${DB_CREDS_USR} \\
                             -e SPRING_DATASOURCE_PASSWORD=${DB_CREDS_PSW} \\
+                            -e s3.bucket.name=${S3_BUCKET_NAME} \\
                             --restart unless-stopped \\
                             ${DOCKER_IMAGE}:${DOCKER_TAG}
                         """
