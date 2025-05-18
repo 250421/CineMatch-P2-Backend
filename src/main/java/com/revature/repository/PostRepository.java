@@ -20,5 +20,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     List<Post> findByBoard(Board board);
 
+    List<Post> findByBoardOrderByCreatedDesc(Board board);
+
     List<Post> findByDeleted(int deleted);
 }

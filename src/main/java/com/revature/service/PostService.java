@@ -115,7 +115,7 @@ public class PostService {
     }
 
     public List<Post> findPostsByBoard(Board board) {
-        List<Post> posts = postRepository.findByBoard(board);
+        List<Post> posts = postRepository.findByBoardOrderByCreatedDesc(board);
         for (Post post : posts) {
             if (post.getImage() != null && !post.getImage().isBlank())
                 post.setImage(createPostImagePresignedURL(bucketName, "posts/" + post.getId() + "/" + post.getImage()));
