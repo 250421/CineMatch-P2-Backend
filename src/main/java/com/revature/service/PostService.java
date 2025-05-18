@@ -35,7 +35,8 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
-    private final String bucketName = "cinematch-storage";
+    @Value("${s3.bucket.name}")
+    private String bucketName;
 
     public String createPostImagePresignedURL(String bucketName, String keyName) {
         try (S3Presigner presigner = S3Presigner.create()) {
@@ -125,7 +126,7 @@ public class PostService {
     public List<Post> findPostsByUser(User user) {
         List<Post> posts = postRepository.findByUser(user);
         for (Post post : posts) {
-            if (!post.getImage().isBlank())
+            if (post.getImage() != null && !post.getImage().isBlank())
                 post.setImage(createPostImagePresignedURL(bucketName, "posts/" + post.getId() + "/" + post.getImage()));
         }
         return posts;
