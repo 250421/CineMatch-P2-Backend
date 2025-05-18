@@ -13,9 +13,9 @@ pipeline {
             stage('Build') {
                 steps {
                     // Build with Maven
-                    export DATABASE_URL=$DB_URL
-                    export USERNAME=$DB_CREDS_USR
-                    export PASSWORD=$DB_CREDS_PSW
+                    export DATABASE_URL=${DB_URL}
+                    export USERNAME=${DB_CREDS_USR}
+                    export PASSWORD=${DB_CREDS_PSW}
                     sh 'mvn clean package'
                 }
 	        }
