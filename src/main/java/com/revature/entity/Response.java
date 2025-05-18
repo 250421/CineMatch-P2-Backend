@@ -37,6 +37,7 @@ public class Response {
         response.put("has_spoiler", post.getHasSpoiler());
         response.put("rating", post.getRating());
         response.put("deleted", post.getDeleted());
+        response.put("created", post.getCreated());
         return response;
     }
 
@@ -52,6 +53,7 @@ public class Response {
             m.put("has_spoiler", p.getHasSpoiler());
             m.put("rating", p.getRating());
             m.put("deleted", p.getDeleted());
+            m.put("created", p.getCreated());
             response.add(m);
         }
         return response;
