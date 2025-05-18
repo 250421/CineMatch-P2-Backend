@@ -17,7 +17,7 @@ pipeline {
                         export DATABASE_URL=${DB_URL}
                         export USERNAME=${DB_CREDS_USR}
                         export PASSWORD=${DB_CREDS_PSW}
-                        ./mvn clean package
+                        mvn clean package
                     """
                 }
 	        }
