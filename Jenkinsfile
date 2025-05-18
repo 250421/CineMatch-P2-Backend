@@ -21,7 +21,11 @@ pipeline {
                 steps {
                     script {
                         // Build new image
-                        sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                        sh "docker build \
+                        --build-arg DATABASE_URL=${DATABASE_URL} \
+                        --build-arg USERNAME=${DB_CREDS_USR} \
+                        --build-arg PASSWORD=${DB_CREDS_PSW} \
+                        -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                     }
                 }
             }
@@ -38,9 +42,6 @@ pipeline {
                             docker run -d \\
                             --name ${DOCKER_IMAGE} \\
                             -p 8082:8080 \\
-                            -e DATABASE_URL=${DB_URL} \\
-                            -e USERNAME=${DB_CREDS_USR} \\
-                            -e PASSWORD=${DB_CREDS_PSW} \\
                             -e s3.bucket.name=${S3_BUCKET_NAME} \\
                             --restart unless-stopped \\
                             ${DOCKER_IMAGE}:${DOCKER_TAG}
