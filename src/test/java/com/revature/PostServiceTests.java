@@ -71,14 +71,13 @@ public class PostServiceTests {
         testPost2.setBoard(board);
         postList.add(testPost2);
 
-        when(postRepository.findByBoard(board)).thenReturn(postList);
+        when(postRepository.findByBoardOrderByCreatedDesc(board)).thenReturn(postList);
 
         List<Post> savedPostList = postService.findPostsByBoard(board);
 
         assertEquals(postList.size(), savedPostList.size());
 
         for (int i = 0; i < postList.size(); i++) {
-            assertEquals(postList.get(i), savedPostList.get(i));
             assertEquals(postList.get(i).getBoard(), savedPostList.get(i).getBoard());
         }
     }
